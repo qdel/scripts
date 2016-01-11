@@ -1,0 +1,9 @@
+for T in `cat /cpuset/sys/tasks`; do sudo bash -c "/bin/echo $T > /cpuset/tasks" > /dev/null 2>&1; done
+# remove sys-cpuset
+sudo rmdir /cpuset/sys
+sudo rmdir /cpuset/qemu
+# unmount and remove /cpuset
+sync && sleep 1
+cd ~/
+sudo umount /cpuset
+sudo rmdir /cpuset
