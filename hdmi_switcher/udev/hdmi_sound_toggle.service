@@ -1,0 +1,10 @@
+[Unit]
+Description=hdmi sound hotplug
+
+[Service]
+Type=simple
+RemainAfterExit=no
+ExecStart=/home/rholk/sbin/hdmi_toggle_acer.sh
+
+[Install]
+WantedBy=multi-user.target

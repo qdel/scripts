@@ -1,0 +1,12 @@
+[Unit]
+Description=Prepare System Sleep
+Before=sleep.target
+Before=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/rholk/sbin/sleep-acer.sh
+
+[Install]
+WantedBy=sleep.target
+WantedBy=suspend.target
