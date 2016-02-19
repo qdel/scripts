@@ -1,11 +1,6 @@
 #!/bin/bash
 
 echo "vm:"$1 "devices:"$2 "mode:"$3
-#sudo virsh list | grep $1
-#if [ ! $? -eq 0 ] ; then
-#    echo "VM doesn't seems here, exiting"
-#    exit 1
-#fi
 
 X=`cat /home/rholk/sbin/vmdata/usb.conf | grep "$2"`
 if [ $? -eq 0 ] ; then
