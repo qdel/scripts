@@ -1,0 +1,36 @@
+#!/bin/bash
+
+echo "vm:"$1 "devices:"$2 "mode:"$3
+#sudo virsh list | grep $1
+#if [ ! $? -eq 0 ] ; then
+#    echo "VM doesn't seems here, exiting"
+#    exit 1
+#fi
+
+X=`cat /home/rholk/sbin/vmdata/usb.conf | grep "$2"`
+if [ $? -eq 0 ] ; then
+    echo "Will bind"
+    NAME=`echo $X | cut -f1 -d' '`
+    VID=`echo $X | cut -f2 -d' '`
+    PID=`echo $X | cut -f3 -d' '`
+    F=`echo $X | md5sum | cut -f1 -d' '`
+    cat /home/rholk/sbin/vmdata/templateusb.xml | sed 's/VID/0x'$VID'/g' | sed 's/PID/0x'$PID'/g' > /tmp/$F.xml
+    if [ "$VID" == "28de" ] && [ "$PID" == "1142" ] && [ "$3" == "attach" ] ; then
+	    echo "Steam Controller connected, killing steam!"
+	    ps aux | grep steam
+	    if [ $? -eq 0 ] ; then
+	        pkill -9 steam
+	        sleep 1
+	    fi
+    fi
+    if [ "$4" == "instant" ] ; then
+	    sudo virsh $3-device $1 /tmp/$F.xml
+    else
+        sudo virsh $3-device --config $1 /tmp/$F.xml
+    fi
+	echo "$NAME binded to vm"
+	rm /tmp/$F.xml
+else
+        echo "No conf for this device"
+fi
+exit 0

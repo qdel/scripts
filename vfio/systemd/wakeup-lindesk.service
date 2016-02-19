@@ -1,0 +1,10 @@
+[Unit]
+Description=Finish System Sleep
+After=suspend.target
+
+[Service]
+Type=simple
+ExecStart=/home/rholk/sbin/wakeup-lindesk.sh
+
+[Install]
+WantedBy=suspend.target

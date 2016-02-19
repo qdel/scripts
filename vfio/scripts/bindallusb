@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ "$3" != "" ] ; then
+    sleep $4
+fi
+RFS=$IFS
+IFS=$'\n'
+for i in `lsusb | cut -f6 -d' '` ; do
+    X=`echo $i | sed 's/:/ /g'`
+    echo "=>"$X
+    grep $X /home/rholk/sbin/vmdata/usb.conf
+    if [ $? -eq 0 ] ; then
+        /home/rholk/sbin/vmusb $1 "$X" $2 $3
+    fi
+done
+IFS=$RFS
