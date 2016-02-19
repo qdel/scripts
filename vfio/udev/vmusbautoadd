@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#if [ -e /tmp/lockusbauto ] ; then
+    #exit 0
+#fi
+
+
+VID=`echo $PRODUCT | sed 's/\([0-9a-f]*\)\/[0-9a-f]*\/[0-9a-f]*/\1/'`
+PID=`echo $PRODUCT | sed 's/[0-9a-f]*\/\([0-9a-f]*\)\/[0-9a-f]*/\1/'`
+F=`echo $VID$PID | md5sum | cut -f1 -d' '`
+N=`basename $DEVPATH`
+if [ ! "$DRIVER" == "usb" ] ; then
+    echo $F
+    echo "Not treating not usb devices" >> /tmp/plugenv
+    exit 0
+fi
+cat /home/rholk/sbin/vmdata/templateusb.xml | sed 's/VID/0x'$VID'/g' | sed 's/PID/0x'$PID'/g' > /tmp/$F.xml
+cat /tmp/$F.xml >> /tmp/plugenv
+echo "Running virsh..." >> /tmp/plugenv
+virsh list | grep win10 >> /tmp/plugenv 2>&1
+if [ $? -eq 0 ] ; then
+    if [ "$VID" == "28de" ] && [ "$PID" == "1142" ] ; then
+	echo "Steam Controller connected, killing steam!" >> /tmp/plugenv
+	ps aux | grep steam
+	if [ $? -eq 0 ] ; then
+	    pkill -9 steam
+	    sleep 1
+	fi
+    fi
+    echo "$VID$PID binding to vm"
+    virsh attach-device win10 /tmp/$F.xml >> /tmp/plugenv 2>&1
+    echo "$VID$PID binded to vm"
+    rm /tmp/$F.xml
+fi
+echo "================+END====================="

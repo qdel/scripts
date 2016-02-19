@@ -1,0 +1,28 @@
+#!/bin/bash
+
+VM=$1
+MODE=$2
+STATE=$3
+
+echo "Call hooks: $1 $2 $3" >> //home/rholk/hooks.log
+
+if [ "$2" == "prepare" ] && [ "$3" == "begin" ] ; then
+   /home/rholk/sbin/vmdata/hookvmprepare $1 >> /home/rholk/hooks.log 2>&1
+   if [ ! $? -eq 0 ] ; then
+      exit 1
+   fi
+elif [ "$2" == "start" ] && [ "$3" == "begin" ] ; then
+   /home/rholk/sbin/vmdata/hookvmstart $1 >> /home/rholk/hooks.log 2>&1
+   if [ ! $? -eq 0 ] ; then
+      exit 1
+   fi
+elif [ "$2" == "started" ] && [ "$3" == "begin" ] ; then
+   /home/rholk/sbin/vmdata/hookvmstarted $1 >> /home/rholk/hooks.log 2>&1
+   if [ ! $? -eq 0 ] ; then
+      exit 1
+   fi
+elif [ "$2" == "stopped" ] && [ "$3" == "end" ] ; then
+   /home/rholk/sbin/vmdata/hookvmstopped $1 >> /home/rholk/hooks.log 2>&1
+elif [ "$2" == "release" ] && [ "$3" == "end" ]  ; then
+   /home/rholk/sbin/vmdata/hookvmrelease $1 >> /home/rholk/hooks.log 2>&1
+fi

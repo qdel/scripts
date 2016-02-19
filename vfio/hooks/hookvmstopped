@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ "$1" != "win10" ] ; then
+    exit 0
+fi
+
+# unbinding all usb devices
+# so in conf, we won't have apparent usb devices passed right now
+# and possibly not here at reboot
+nohup /home/rholk/sbin/vmdata/bindallusb win10 detach 2&
+
+# dual / tripple screen back to linux
+nohup /home/rholk/sbin/lindeskscreen dual&
+disown -h -a

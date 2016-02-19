@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$1" != "win10" ] ; then
+    exit 0
+fi
+# echo switching to simple screen + starting synergy
+# this is not needed for vm to start, so async
+IP='192.168.88.15' nohup /home/rholk/sbin/lindeskscreen unq&
+disown -h -a

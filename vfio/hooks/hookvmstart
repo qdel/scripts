@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "Vm ready to fire up"

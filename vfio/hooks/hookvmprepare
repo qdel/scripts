@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$1" != "win10" ] ; then
+    exit 0
+fi
+
+# Building cgroup shield
+/home/rholk/sbin/shieldbuild
+if [ ! $? -eq 0 ] ; then
+    echo "Cannot build shield"
+    exit 3
+fi
+
+# performance mode
+/home/rholk/sbin/powermax
+
+# switching sata controller to vfio-pci
+# and nvme disk to vfio-pci
+/home/rholk/sbin/bindasmedia vfio-pci
