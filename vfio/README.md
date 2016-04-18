@@ -1,12 +1,14 @@
 win10.xml:
 
-    - Use cores 1,2,3 without hyperthreading. Leaving HT thread to emulator
+    # - Use cores 1,2,3 without hyperthreading. Leaving HT thread to emulator
+    - use cores 1,2,3,5,6 let 7 to emulator
     - pass vga r9 290
     - pass ssd: nvme 950 pro
     - pass sata controller
     - pass pcie ethernet card
-    - use 2 screens, 1 binded to linux, synergy between both OS
-    - redirect usb devices (not the whole controller)
+    - pass usb3 controller
+    - use 3 screens, 1 binded to linux only, 2 other switching dynamically, synergy between both OS
+    - can redirect usb devices using scripts
 
 scripts:
 
