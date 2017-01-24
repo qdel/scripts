@@ -1,6 +1,9 @@
 win10.xml:
 
+
     - Use cores 1,2,3 with hyperthreading
+    # - Use cores 1,2,3 without hyperthreading. Leaving HT thread to emulator
+    - use core 7 to emulator
     - pass vga r9 290
     - pass ssd: nvme 950 pro
     - pass sata controller
