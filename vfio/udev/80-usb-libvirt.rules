@@ -1,3 +1,7 @@
 ACTION=="add", \
     SUBSYSTEM=="usb", \
     RUN+="/home/rholk/sbin/vmusbautoadd"
+
+ACTION=="remove", \
+    SUBSYSTEM=="usb", \
+    RUN+="/home/rholk/sbin/vmusbautodel"

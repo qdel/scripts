@@ -1,0 +1,16 @@
+#!/bin/bash
+exit 0
+VID=`echo $PRODUCT | sed 's/\([0-9a-f]*\)\/[0-9a-f]*\/[0-9a-f]*/\1/'`
+PID=`echo $PRODUCT | sed 's/[0-9a-f]*\/\([0-9a-f]*\)\/[0-9a-f]*/\1/'`
+F=`echo $VID$PID | md5sum | cut -f1 -d' '`
+
+cat /home/rholk/sbin/vmdata/templateusb.xml | sed 's/VID/0x'$VID'/g' | sed 's/PID/0x'$PID'/g' > /tmp/$F.xml
+cat /tmp/$F.xml >> /tmp/plugenv
+echo "Running virsh..." >> /tmp/plugenv
+virsh list | grep win10
+if [ $? -eq 0 ] ; then
+    echo "$VID$PID binding to vm"
+    virsh detach-device win10 /tmp/$F.xml
+    echo "$VID$PID binded to vm"
+    rm /tmp/$F.xml
+fi

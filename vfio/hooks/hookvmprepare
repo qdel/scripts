@@ -1,19 +1,24 @@
 #!/bin/bash
 
-if [ "$1" != "win10" ] ; then
+if [ "$1" != "win10" ] && [ "$1" != "win7" ] ; then
     exit 0
 fi
 
-# Building cgroup shield
+M=`cat /etc/libvirt/qemu/$1.xml | grep '\<memory\>' | sed 's/.*>\(.*\)<.*/\1/g'`
+M=$((M/1024))
+#M=$((M+50)) #on rajoute 50 mo de rab
+true
+#/home/rholk/sbin/hugepage $M
+if [ ! $? -eq 0 ] ; then
+    echo "Cannot allocate hugepage, free memory"
+    exit 2
+fi
+
 /home/rholk/sbin/shieldbuild
 if [ ! $? -eq 0 ] ; then
     echo "Cannot build shield"
     exit 3
 fi
 
-# performance mode
 /home/rholk/sbin/powermax
-
-# switching sata controller to vfio-pci
-# and nvme disk to vfio-pci
 /home/rholk/sbin/bindasmedia vfio-pci

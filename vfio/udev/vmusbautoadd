@@ -1,5 +1,5 @@
 #!/bin/bash
-
+exit 0
 #if [ -e /tmp/lockusbauto ] ; then
     #exit 0
 #fi

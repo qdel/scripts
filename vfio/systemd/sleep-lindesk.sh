@@ -1,18 +1,31 @@
 #!/bin/bash
-echo "Sleeping" >> /dev/kmsg
-sudo virsh list >> /dev/kmsg
-sudo virsh list | grep win10 | grep running
-if [ $? -eq 0 ] ; then
-    echo "win10 running, putting it to sleep" >> /dev/kmsg
-    sudo virsh dompmsuspend --domain win10 --target mem
-    sleep 2
-    sudo virsh list >> /dev/kmsg
-    sudo virsh list | grep win10 | grep pmsuspend
+
+echo "SLEEP: Sleeping" >> /dev/kmsg
+#lspci -s 01:00.0 -xxxx > /home/rholk/dumps/vga-before-sleep.reg
+#lspci -s 01:00.1 -xxxx > /home/rholk/dumps/snd-before-sleep.reg
+sudo rm /tmp/restartwin
+IFS=$'\n'
+for VM in `virsh list --name` ; do
+    sudo virsh list | grep $VM >> /dev/kmsg
     if [ $? -eq 0 ] ; then
-        echo "win10 now sleeping" >> /dev/kmsg
-    else
-        echo "win10 not sleeping" >> /dev/kmsg
-        exit 1
+	    sudo virsh list | grep $VM | grep running >> /dev/kmsg
+	    W=$?
+	    while [ $W -eq 0 ] ; do
+            echo "SLEEP: $VM running, shutting it down" >> /dev/kmsg
+            grep $VM /tmp/restartwin
+            if [ ! $? -eq 0 ] ; then
+                echo $VM | sudo tee -a /tmp/restartwin
+            fi
+	        sudo virsh shutdown $VM >> /dev/kmsg
+            #sudo virsh dompmsuspend --target disk $VM >> /dev/kmsg
+	        echo "SLEEP: Cmd return:"$? >> /dev/kmsg
+            sudo virsh list >> /dev/kmsg
+	        sudo virsh list | grep $VM | grep running >> /dev/kmsg
+            W=$?
+	    done
     fi
-fi
-echo "Sleeping done" >> /dev/kmsg
+done
+sync
+echo "SLEEP: Sleeping done (vm sleeping or shutted down)" >> /dev/kmsg
+#lspci -s 01:00.0 -xxxx > /home/rholk/dumps/vga-after-sleep.reg
+#lspci -s 01:00.1 -xxxx > /home/rholk/dumps/snd-after-sleep.reg

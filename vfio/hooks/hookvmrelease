@@ -1,14 +1,10 @@
 #!/bin/bash
 
-if [ "$1" != "win10" ] ; then
+if [ "$1" != "win10" ] && [ "$1" != "win7" ] ; then
     exit 0
 fi
 
-# removing hugepage
 /home/rholk/sbin/hugepagereset
-# breaking cgroup shielding
-/home/rholk/sbin/shieldbrea-
-# let's put back sata controller to ahci
-# and nvme drive to nvme
+/home/rholk/sbin/shieldbreak
 /home/rholk/sbin/bindasmedia ahci
-
+#/home/rholk/sbin/powertune
